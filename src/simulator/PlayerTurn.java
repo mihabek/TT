@@ -10,6 +10,7 @@ public class PlayerTurn {
 	int attentionPerTurn;
 	int turnCounter;
 	LinkedList<Action> actions;
+	boolean isOver;
 	
 	public PlayerTurn(int playerNumber, int turnCounter, int attentionPerTurn) {
 		super();
@@ -20,7 +21,17 @@ public class PlayerTurn {
 	}
 	
 	public boolean isOver() {
-		return isAttentionSpent();
+		boolean ret;
+		if (isOver==true) {
+			ret = true;
+		} else {
+			ret = isAttentionSpent();
+		}
+		return ret;
+	}
+	
+	public void setIsOver(boolean isOver){
+		this.isOver = isOver;
 	}
 	
 	public boolean isAttentionSpent() {
@@ -35,7 +46,7 @@ public class PlayerTurn {
 	
 	public ArrayList<Action> getAvailableActions(Game game) {
 		ArrayList<Action> availableActions = new ArrayList<Action>(); 
-		if(game.getPlayerByNumber(playerNumber).getAmountOfFunctionalitiesOnHands() == 0){
+		if(game.getPlayerByNumber(playerNumber).getAmountOfFunctionalitiesOnHands() == 0 || game.getPlayerByNumber(playerNumber).getWorkingFunctionalities() == 0){
 			game.setIsOver(true);
 		}
 		
@@ -62,18 +73,42 @@ public class PlayerTurn {
 		 * or improve strategy for X AP
 		 * MOVE FUNCTIONALITY FOR MONEY ???????
 		 */
-		pickNextFunctionality(game);
+		Random r = new Random();
+		int rnd = r.nextInt(3-1) + 1;
+		switch (rnd) {
+		case 1:
+			
+			break;
+
+		case 2:
+			
+			break;
+		}
+		
+		if(game.getPlayerByNumber(playerNumber).getFunctionalitiesInGame() != 3){
+			pickNextFunctionality(game);
+		}
+		
+		
 		if(game.getPlayerByNumber(playerNumber).getLevelOfcurrentFunctionalityInProgress() == 6){
 			putFunctionalityToImplementation(game);
 			System.out.println("added new  " + game.getPlayerByNumber(playerNumber).getWorkingFunctionalities() + "  " +
-			game.getPlayerByNumber(playerNumber).getBrokenFunctionalities() + "  " + game.getPlayerByNumber(playerNumber).getAmountOfFunctionalitiesOnHands());
+			game.getPlayerByNumber(playerNumber).getBrokenFunctionalities() + "  " + game.getPlayerByNumber(playerNumber).getAmountOfFunctionalitiesOnHands() + "   " + game.getPlayerByNumber(playerNumber).getTurns());
 		}
+		game.getPlayerByNumber(playerNumber).setTurns(1); //player made a move
 	}
 	
 	private void putFunctionalityToImplementation(Game game) {
 		Random r = new Random();
 		int rnd = r.nextInt(3-1) + 1;
 		game.getPlayerByNumber(playerNumber).setLevelOfcurrentFunctionalityInProgress(0); // FN is in implementation and put it to working or broken
+		
+		if (game.getPlayerByNumber(playerNumber).getWorkingFunctionalities()==0) {
+			rnd = 2;
+		} else if (game.getPlayerByNumber(playerNumber).getBrokenFunctionalities()==0) {
+			rnd = 1;
+		}
+		
 		if(rnd==1){
 			game.getPlayerByNumber(playerNumber).setWorkingFunctionalities(1);
 		} else {
@@ -83,7 +118,7 @@ public class PlayerTurn {
 
 	private void pickNextFunctionality(Game game) {
 		game.getPlayerByNumber(playerNumber).setAmountOfFunctionalitiesOnHands(1);
-		
+		game.getPlayerByNumber(playerNumber).setFunctionalitiesInGame(1);
 	}
 
 	private boolean isActionPerformed(ActionType actionType) {

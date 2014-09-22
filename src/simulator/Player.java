@@ -9,6 +9,8 @@ public class Player {
 	int levelOfcurrentFunctionalityInProgress;
 	int workingFunctionalities;
 	int brokenFunctionalities;
+	int turns;
+	int functionalitiesInGame;
 	
 	public Player(int playerNumber) {
 		super();
@@ -40,14 +42,7 @@ public class Player {
 	
 	//FN-s in the player-s deck
 	public void setAmountOfFunctionalitiesOnHands(int amountOfFunctionalitiesOnHands){
-		
 		this.amountOfFunctionalitiesOnHands -= amountOfFunctionalitiesOnHands;
-		
-//		if(rnd==1){
-//			setWorkingFunctionalities(1);
-//		} else {
-//			setBrokenFunctionalities(1);
-//		}
 	}
 	
 	public int getAmountOfFunctionalitiesOnHands() {
@@ -69,7 +64,21 @@ public class Player {
 	public void setBrokenFunctionalities(int brokenFunctionalities) {
 		this.brokenFunctionalities -= brokenFunctionalities;
 	}
-
 	
+	public int getTurns() {
+		return turns;
+	}
+
+	public void setTurns(int turns) {
+		this.turns += turns;
+	}
+
+	public int getFunctionalitiesInGame() {
+		return functionalitiesInGame;
+	}
+	//amount of FN currently on board
+	public void setFunctionalitiesInGame(int functionalitiesInGame) {
+		this.functionalitiesInGame += functionalitiesInGame;
+	}
 
 }

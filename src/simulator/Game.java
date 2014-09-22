@@ -36,7 +36,7 @@ public class Game {
 	public void setStrategyTree(StrategyTree strategyTree) {
 		this.strategyTree = strategyTree;
 	}
-
+	
 	public void initialize() {
 		eventCardDeck.shuffle();
 		turns.add(new PlayerTurn(players.get(0).getPlayerNumber(), FIRST_TURN, getAttentionPerTurn()));

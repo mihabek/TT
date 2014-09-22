@@ -62,6 +62,9 @@ public class Simulation {
 				while (!game.getCurrentTurn().isOver()){
 					// check next possible actions
 					ArrayList<Action> availableActions = game.getAvailableActionsForTurn(game.getCurrentTurn());
+					if(game.isOver()==true){
+						game.getCurrentTurn().setIsOver(true);
+					}
 				}
 			}
 		}
