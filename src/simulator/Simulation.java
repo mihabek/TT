@@ -3,13 +3,13 @@ package simulator;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Properties;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
-
 
 public class Simulation {
 	public static final String PROPERTY_FILE_NAME = "bin/game.properties";
@@ -44,23 +44,29 @@ public class Simulation {
 			Game game = setUpGame(defaultProps);
 			
 			// build technology tree
-			TechnologyTree technologyTree = setUpTechnologyTree(defaultProps);
-			
-			// build game flow
-			GameFlow gameFlow = setUpGameFlow();
+			StrategyTree strategyTree = setUpStrategyTree(defaultProps);
 			
 			// add card deck
-			EventCardDeck cardDeck = setUpCardDeck(defaultProps, technologyTree);
+			EventCardDeck cardDeck = setUpCardDeck(defaultProps, strategyTree);
 			
 			// add player
 			game.addPlayer(new Player(1));
 			
 			// initialize and start game
 			game.setCardDeck(cardDeck);
-			game.setTechnologyTree(technologyTree);
+			game.setStrategyTree(strategyTree);
+			game.initialize();
+			
+			//MAIN LOOP
+			while(!game.isOver()) {
+				while (!game.getCurrentTurn().isOver()){
+					// check next possible actions
+					ArrayList<Action> availableActions = game.getAvailableActionsForTurn(game.getCurrentTurn());
+				}
+			}
 		}
-
-		private static EventCardDeck setUpCardDeck(Properties properties, TechnologyTree technologyTree) {
+		
+		private static EventCardDeck setUpCardDeck(Properties properties, StrategyTree strategyTree) {
 			EventCardDeck cardDeck = new EventCardDeck();
 			for(String property : properties.stringPropertyNames())  {
 				if(property.startsWith(EventCard.CARD_PREFIX)) {
@@ -81,7 +87,7 @@ public class Simulation {
 					
 						String name = parts[0];
 						int effectOnAttention = Integer.parseInt(parts[1]);
-						int negatedByTechnologyId = Integer.parseInt(parts[2]);
+						int negatedByStrategyId = Integer.parseInt(parts[2]);
 						int effectOnStrategyInProgress = Integer.parseInt(parts[3]);
 						int goBack = Integer.parseInt(parts[4]);
 						int goRandomBack = Integer.parseInt(parts[5]);
@@ -93,7 +99,7 @@ public class Simulation {
 						EventCard card = new EventCard (
 								name, 
 								effectOnAttention, 
-								negatedByTechnologyId, 
+								negatedByStrategyId, 
 								effectOnStrategyInProgress, 
 								goBack, 
 								goRandomBack,
@@ -104,7 +110,7 @@ public class Simulation {
 								);
 						System.out.println(card);
 //						int negatedByTechnologyId = technologyTree.findTechnologyIdByName(negatedByTechnology);
-//					}
+						cardDeck.addCard(card);
 				}
 				
 				}
@@ -112,39 +118,24 @@ public class Simulation {
 			return cardDeck;
 		}
 
-		private static GameFlow setUpGameFlow() {
-			LinkedList<GameStep> gameSteps = new LinkedList<GameStep>();
-			gameSteps.add(new GameStep(GameStepType.ANALYSIS));
-			gameSteps.add(new GameStep(GameStepType.CONFIRM_ANALYSIS));
-			gameSteps.add(new GameStep(GameStepType.CUSTOMER_VERIFICATION));
-			gameSteps.add(new GameStep(GameStepType.DEVELOPMMENT));
-			gameSteps.add(new GameStep(GameStepType.QA));
-			gameSteps.add(new GameStep(GameStepType.RELEASE));
-			gameSteps.add(new GameStep(GameStepType.IMPLEMENTATION));
-			GameFlow gameFlow = new GameFlow(gameSteps);
-			System.out.println(gameFlow);
-			System.out.println("\n");
-			return gameFlow;
-		}
-
-		private static TechnologyTree setUpTechnologyTree(Properties properties) {
-			TechnologyTree technologyTree = new TechnologyTree();
+		private static StrategyTree setUpStrategyTree(Properties properties) {
+			StrategyTree strategyTree = new StrategyTree();
 			for(String property : properties.stringPropertyNames())  {
-				if(property.startsWith(Technology.TECHNOLOGY_PREFIX)) {
+				if(property.startsWith(Strategy.STRATEGY_PREFIX)) {
 					String propertyValue = properties.getProperty(property);
 					String[] parts = propertyValue.split(PROPERTY_DELIMITER);
 					
-					Technology technology = new Technology(
+					Strategy strategy = new Strategy(
 							Integer.parseInt(parts[0]), 
 							parts[1], 
 							Integer.parseInt(parts[2]));
-					technologyTree.addTechnology(technology);
-					System.out.println(technology);
+					strategyTree.addStrategy(strategy);
+					System.out.println(strategy);
 				}}
 			System.out.println("\n");
-			return technologyTree;
+			return strategyTree;
 		}
-
+		
 		static Game setUpGame(Properties defaultProps) {
 			// set up game
 			Game game = new Game(

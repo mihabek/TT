@@ -1,13 +1,13 @@
 package simulator;
 
-public class Technology {
-	public static final String TECHNOLOGY_PREFIX = "technology.";
+public class Strategy {
+	public static final String STRATEGY_PREFIX = "strategy.";
 	
 	int id;
 	String name;
 	int cost;
 	
-	public Technology(int id, String name, int cost) {
+	public Strategy(int id, String name, int cost) {
 		super();
 		this.id = id;
 		this.name = name;
