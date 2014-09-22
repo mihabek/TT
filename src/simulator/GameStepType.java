@@ -1,0 +1,11 @@
+package simulator;
+
+public enum GameStepType {
+	ANALYSIS,
+	CONFIRM_ANALYSIS,
+	DEVELOPMMENT,
+	QA,
+	CUSTOMER_VERIFICATION,
+	RELEASE,
+	IMPLEMENTATION;
+}
